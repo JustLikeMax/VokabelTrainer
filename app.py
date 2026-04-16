@@ -32,11 +32,19 @@ def index():
 @app.route("/check", methods=["POST"])
 def check():
     vokabel_id = request.form["vokabel_id"]
-    eingabe = request.form["eingabe"]
+    eingabe = request.form.get("eingabe", "").strip()
     vokabel = Vokabel.query.get(vokabel_id)
-    if eingabe.lower() is None or eingabe.lower() == "":
+
+    if vokabel is None:
+        return redirect(url_for("index"))
+
+    if not eingabe:
         return render_template("index.html", vokabel=vokabel, wrong=True)
-    if eingabe.lower() in vokabel.deutsch.lower():  # type: ignore
+
+    eingabe_normalisiert = eingabe.strip().lower()
+    loesungen = [loesung.strip().lower() for loesung in vokabel.deutsch.split(";")]  # type: ignore
+
+    if eingabe_normalisiert in loesungen:
         return redirect(url_for("next", current_id=vokabel_id))
     else:
         return render_template("index.html", vokabel=vokabel, wrong=True)
