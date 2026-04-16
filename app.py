@@ -81,13 +81,40 @@ def delete(vokabel_id):
 
 @app.route("/save", methods=["POST"])
 def save():
+    ids = request.form.getlist("id[]")
+    franzoesisch_liste = request.form.getlist("franzoesisch[]")
+    deutsch_liste = request.form.getlist("deutsch[]")
     neu_franzoesisch = request.form.get("neu_franzoesisch")
     neu_deutsch = request.form.get("neu_deutsch")
 
-    if neu_franzoesisch and neu_deutsch:
-        neue_vokabel = Vokabel(franzoesisch=neu_franzoesisch, deutsch=neu_deutsch)  # type: ignore
+    for vokabel_id, franzoesisch, deutsch in zip(ids, franzoesisch_liste, deutsch_liste):
+        bereinigtes_franzoesisch = franzoesisch.strip()
+        bereinigtes_deutsch = deutsch.strip()
+        if not bereinigtes_franzoesisch or not bereinigtes_deutsch:
+            continue
+
+        try:
+            datensatz_id = int(vokabel_id)
+        except (TypeError, ValueError):
+            continue
+
+        vokabel = Vokabel.query.get(datensatz_id)
+        if vokabel is None:
+            continue
+
+        vokabel.franzoesisch = bereinigtes_franzoesisch
+        vokabel.deutsch = bereinigtes_deutsch
+
+    bereinigtes_neu_franzoesisch = (neu_franzoesisch or "").strip()
+    bereinigtes_neu_deutsch = (neu_deutsch or "").strip()
+    if bereinigtes_neu_franzoesisch and bereinigtes_neu_deutsch:
+        neue_vokabel = Vokabel(  # type: ignore
+            franzoesisch=bereinigtes_neu_franzoesisch,
+            deutsch=bereinigtes_neu_deutsch,
+        )
         db.session.add(neue_vokabel)
-        db.session.commit()
+
+    db.session.commit()
 
     return redirect("/edit")
 

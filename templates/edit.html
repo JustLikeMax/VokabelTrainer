@@ -31,6 +31,7 @@
                     {% for vokabel in vokabeln %}
                     <tr>
                         <td>
+                            <input type="hidden" name="id[]" value="{{ vokabel.id }}">
                             <input type="text" name="franzoesisch[]" value="{{ vokabel.franzoesisch }}">
                         </td>
                         <td>
