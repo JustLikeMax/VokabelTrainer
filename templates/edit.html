@@ -18,43 +18,43 @@
 
     <div class="container">
         <h1>Vokabeltrainer - Bearbeiten</h1>
-        <form class="edit-form" action="/save" method="POST">
-            <table class="edit-table">
-                <thead>
-                    <tr>
-                        <th>Französisch</th>
-                        <th>Deutsch</th>
-                        <th>Aktionen</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for vokabel in vokabeln %}
-                    <tr>
-                        <td>
-                            <input type="text" name="franzoesisch[]" value="{{ vokabel.franzoesisch }}">
-                        </td>
-                        <td>
-                            <input type="text" name="deutsch[]" value="{{ vokabel.deutsch }}">
-                        </td>
-                        <td>
-                            <a href="/delete/{{ vokabel.id }}">Löschen</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                    <tr>
-                        <td>
+        <table class="edit-table">
+            <thead>
+                <tr>
+                    <th>Französisch</th>
+                    <th>Deutsch</th>
+                    <th>Aktionen</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for vokabel in vokabeln %}
+                <tr>
+                    <td>
+                        <input type="text" name="franzoesisch[]" value="{{ vokabel.franzoesisch }}" readonly>
+                    </td>
+                    <td>
+                        <input type="text" name="deutsch[]" value="{{ vokabel.deutsch }}" readonly>
+                    </td>
+                    <td>
+                        <form action="/delete/{{ vokabel.id }}" method="POST" style="display:inline;">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit">Löschen</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td colspan="3">
+                        <form class="edit-form" action="/save" method="POST">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <input type="text" name="neu_franzoesisch" placeholder="Neues französisches Wort">
-                        </td>
-                        <td>
                             <input type="text" name="neu_deutsch" placeholder="Übersetzung">
-                        </td>
-                        <td>
                             <button type="submit">Speichern</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </form>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
 </body>

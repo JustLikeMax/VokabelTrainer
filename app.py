@@ -1,12 +1,14 @@
 import random
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, abort
 from flask_sqlalchemy import SQLAlchemy
+from flask_wtf.csrf import CSRFProtect
 import webview
 
 app = Flask(__name__)
 app.secret_key = "secret"
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///vokabeln.db"
 db = SQLAlchemy(app)
+csrf = CSRFProtect(app)
 window = webview.create_window(
     "Vokabeltrainer",
     app,  # type: ignore
@@ -71,9 +73,12 @@ def add():
     return redirect(url_for("edit"))
 
 
-@app.route("/delete/<int:vokabel_id>")
+@app.route("/delete/<int:vokabel_id>", methods=["POST"])
 def delete(vokabel_id):
     vokabel = Vokabel.query.get(vokabel_id)
+    if vokabel is None:
+        abort(404, description="Vokabel nicht gefunden.")
+
     db.session.delete(vokabel)
     db.session.commit()
     return redirect(url_for("edit"))
