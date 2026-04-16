@@ -1,10 +1,25 @@
+import os
 import random
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 import webview
 
 app = Flask(__name__)
-app.secret_key = "secret"
+
+secret_key = os.getenv("SECRET_KEY")
+is_development = (
+    os.getenv("FLASK_ENV") == "development" or os.getenv("FLASK_DEBUG") == "1"
+)
+
+if not secret_key:
+    if is_development:
+        secret_key = "dev-insecure-secret-key-only-for-local-development"
+    else:
+        raise RuntimeError(
+            "SECRET_KEY environment variable must be set outside development."
+        )
+
+app.secret_key = secret_key
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///vokabeln.db"
 db = SQLAlchemy(app)
 window = webview.create_window(
