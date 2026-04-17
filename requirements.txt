@@ -1,0 +1,4 @@
+flask>=3.0
+flask-sqlalchemy>=3.1
+flask-wtf>=1.2
+pywebview>=5.0
