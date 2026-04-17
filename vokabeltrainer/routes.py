@@ -65,7 +65,7 @@ def register_routes(app: Flask) -> None:
         db.session.commit()
         return redirect(url_for("edit"))
 
-    @app.route("/delete/<int:vokabel_id>")
+    @app.route("/delete/<int:vokabel_id>", methods=["POST"])
     def delete(vokabel_id: int) -> ResponseReturnValue:
         vokabel = _get_vokabel_or_abort(vokabel_id)
         db.session.delete(vokabel)
