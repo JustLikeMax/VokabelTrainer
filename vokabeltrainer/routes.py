@@ -82,4 +82,4 @@ def register_routes(app: Flask) -> None:
             db.session.add(neue_vokabel)
             db.session.commit()
 
-        return redirect("/edit")
+        return redirect(url_for("edit"))
