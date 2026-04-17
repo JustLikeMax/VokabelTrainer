@@ -25,6 +25,7 @@
             <h2 class="franzoesisch">{{ vokabel.franzoesisch }}</h2>
         </div>
         <form action="/check" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <input type="hidden" name="vokabel_id" value="{{ vokabel.id }}">
             <input type="hidden" name="vokabel_franzoesisch" value="{{ vokabel.franzoesisch }}">
             <input type="text" id="eingabe" name="eingabe" autofocus>

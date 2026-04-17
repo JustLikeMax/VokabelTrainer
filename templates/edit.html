@@ -18,7 +18,8 @@
 
     <div class="container">
         <h1>Vokabeltrainer - Bearbeiten</h1>
-        <form class="edit-form" action="/save" method="POST">
+        <form class="edit-form" action="{{ url_for('save') }}" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <table class="edit-table">
                 <thead>
                     <tr>
@@ -38,7 +39,7 @@
                             <input type="text" name="deutsch[]" value="{{ vokabel.deutsch }}">
                         </td>
                         <td>
-                            <a href="/delete/{{ vokabel.id }}">Löschen</a>
+                            <button type="submit" formaction="{{ url_for('delete', vokabel_id=vokabel.id) }}" formmethod="POST">Löschen</button>
                         </td>
                     </tr>
                     {% endfor %}
